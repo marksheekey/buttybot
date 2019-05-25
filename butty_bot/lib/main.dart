@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,7 +34,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  void _incrementCounter() {
+  DatabaseReference ref;
+  StreamSubscription r1;
+  StreamSubscription r2;
+  StreamSubscription r3;
+  @override
+  void initState() {
+    super.initState();
+    final FirebaseDatabase database = FirebaseDatabase.instance;
+    print("init");
+    ref = database.reference();
+    r1 = ref.onChildAdded.listen(_refresh);
+    r2 = ref.onChildChanged.listen(_refresh);
+    r3 = ref.onChildRemoved.listen(_refresh);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    r1.cancel();
+    r2.cancel();
+    r3.cancel();
+  }
+
+  void _refresh(Event event) {
+    setState(() {});
+  }
+
+  void _newButty() {
     getThisUser().then((String user) {
       if (user != null && user.length > 0) {
         Navigator.push(
@@ -69,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _newButty,
         tooltip: 'New Butty',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.

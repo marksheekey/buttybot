@@ -66,6 +66,8 @@ Future<String> getNext() async {
         print("lenght ${nexts[0].toString()}");
         n = nexts[0]["next"];
       }
+    } else {
+      addNext("Sometime");
     }
   });
 

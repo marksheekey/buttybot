@@ -5,7 +5,7 @@
     "project_id": "buttybot-7753d",
     "storage_bucket": "buttybot-7753d.appspot.com"
   },
-  "client": [pod
+  "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:1013864419426:android:a83de580992e6e06",
