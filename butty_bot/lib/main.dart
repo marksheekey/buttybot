@@ -1,13 +1,16 @@
 import 'dart:async';
 
+import 'package:buttybot/ButtyListByButtyWidget.dart';
+import 'package:buttybot/ButtyListByUserWidget.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'ButtyListWidget.dart';
+import 'Butties.dart';
+import 'Butty.dart';
 import 'CreateButtyWidget.dart';
 import 'CreateUserWidget.dart';
-import 'NextButtyWidget.dart';
+import 'DB.dart' as db;
 
 void main() => runApp(MyApp());
 
@@ -38,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   StreamSubscription r1;
   StreamSubscription r2;
   StreamSubscription r3;
+
   @override
   void initState() {
     super.initState();
@@ -66,7 +70,8 @@ class _MyHomePageState extends State<MyHomePage> {
       if (user != null && user.length > 0) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => CreateButtyWidget()),
+          MaterialPageRoute(
+              builder: (context) => CreateButtyWidget(new Butty())),
         );
       } else {
         Navigator.push(
@@ -85,24 +90,47 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            NextButtyWidget(),
-            ButtyListWidget(),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _newButty,
-        tooltip: 'New Butty',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    return FutureBuilder(
+        future: db.geButtyList(),
+        builder: (BuildContext context, AsyncSnapshot<Butties> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return Text('');
+            case ConnectionState.active:
+              return Text('');
+            case ConnectionState.waiting:
+              return Text('');
+            case ConnectionState.done:
+              if (snapshot.hasError) return Text('');
+
+              final List<Butty> list = snapshot.data.butties;
+              print("tabby");
+
+              return MaterialApp(
+                home: DefaultTabController(
+                  length: 2,
+                  child: Scaffold(
+                    floatingActionButton: FloatingActionButton(
+                      onPressed: _newButty,
+                      tooltip: 'New Butty',
+                      child: Icon(Icons.add),
+                    ),
+                    appBar: AppBar(
+                      bottom: TabBar(
+                        tabs: [Tab(text: "By User"), Tab(text: "By Butty")],
+                      ),
+                      title: Text('Butty Bot'),
+                    ),
+                    body: TabBarView(
+                      children: [
+                        ButtyListByUserWidget(list),
+                        ButtyListByButtyWidget(list),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+          }
+        });
   }
 }

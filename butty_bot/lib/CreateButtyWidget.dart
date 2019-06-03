@@ -1,24 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 import 'Butty.dart';
 import 'DB.dart' as db;
 
 class CreateButtyWidget extends StatefulWidget {
+  final Butty butty;
+  CreateButtyWidget(this.butty);
+
   @override
-  _CreateButtyState createState() => _CreateButtyState();
+  _CreateButtyState createState() => _CreateButtyState(this.butty);
 }
 
 @override
 class _CreateButtyState extends State<CreateButtyWidget> {
-  final Butty butty = new Butty();
+  Butty butty;
+
+  _CreateButtyState(this.butty);
 
   void _addButty() {
     getThisUser().then((String user) {
       butty.user = user;
+      var uuid = new Uuid();
+      butty.id = uuid.v4();
       db.addButty(butty);
       Navigator.pop(context);
     });
+  }
+
+  void _updateButty() {
+    db.updateButty(butty);
+    Navigator.pop(context);
+  }
+
+  void _doButty() {
+    if (butty.id.length == 0) {
+      _addButty();
+    } else {
+      _updateButty();
+    }
   }
 
   Future<String> getThisUser() async {
@@ -29,14 +50,21 @@ class _CreateButtyState extends State<CreateButtyWidget> {
 
   @override
   Widget build(BuildContext context) {
+    String title = "Create Butty";
+    if (butty != null) {
+      title = "Update Butty";
+    } else {
+      butty = new Butty();
+    }
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: _addButty,
+        onPressed: _doButty,
         tooltip: 'Add',
         child: Icon(Icons.add),
       ), // This trailing comma makes a
       appBar: AppBar(
-        title: Text("Create Butty"),
+        title: Text(title),
       ),
       body: Column(
         children: <Widget>[

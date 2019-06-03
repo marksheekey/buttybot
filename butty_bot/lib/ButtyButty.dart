@@ -1,6 +1,4 @@
-class Butty {
-  String id;
-  String user;
+class ButtyButty {
   bool white_bread;
   bool brown_bread;
   bool bacon;
@@ -9,11 +7,9 @@ class Butty {
   bool hp_sauce;
   bool ketchup;
   bool selected;
-  int number;
+  int total;
 
-  Butty() {
-    id = "";
-    user = "";
+  ButtyButty() {
     white_bread = true;
     brown_bread = false;
     bacon = false;
@@ -22,6 +18,6 @@ class Butty {
     hp_sauce = false;
     ketchup = false;
     selected = false;
-    number = 1;
+    total = 1;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 
+import 'Butties.dart';
 import 'Butty.dart';
 
 final butties = FirebaseDatabase.instance.reference().child('butties');
@@ -7,7 +8,23 @@ final users = FirebaseDatabase.instance.reference().child('users');
 final next = FirebaseDatabase.instance.reference().child('next');
 
 void addButty(Butty butty) {
-  butties.push().set({
+  butties.child(butty.id).set({
+    'id': butty.id,
+    'user': butty.user,
+    'white_bread': butty.white_bread,
+    'brown_bread': butty.brown_bread,
+    'bacon': butty.bacon,
+    'sausage': butty.sausage,
+    'egg': butty.egg,
+    'hp_sauce': butty.hp_sauce,
+    'ketchup': butty.ketchup,
+    'number': butty.number
+  });
+}
+
+void updateButty(Butty butty) {
+  butties.child(butty.id).update({
+    'id': butty.id,
     'user': butty.user,
     'white_bread': butty.white_bread,
     'brown_bread': butty.brown_bread,
@@ -74,14 +91,17 @@ Future<String> getNext() async {
   return n;
 }
 
-Future<List<Butty>> geButtyList() async {
+Future<Butties> geButtyList() async {
   List<Butty> buttyList = new List();
+  buttyList.clear();
   await butties.once().then((DataSnapshot snapshot) {
     Map<dynamic, dynamic> map = snapshot.value;
     if (map != null && map.values != null) {
       List b = map.values.toList();
+      print(b.toString());
       for (int i = 0; i < b.length; i++) {
         Butty butty = new Butty();
+        butty.id = b[i]["id"];
         butty.user = b[i]["user"];
         butty.white_bread = b[i]["white_bread"];
         butty.brown_bread = b[i]["brown_bread"];
@@ -99,5 +119,8 @@ Future<List<Butty>> geButtyList() async {
     }
   });
 
-  return buttyList;
+  Butties bs = new Butties();
+  bs.addButties(buttyList);
+
+  return bs;
 }

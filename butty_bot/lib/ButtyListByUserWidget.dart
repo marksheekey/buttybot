@@ -1,48 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Butty.dart';
-import 'DB.dart' as db;
+import 'CreateButtyWidget.dart';
 
-class ButtyListWidget extends StatelessWidget {
+class ButtyListByUserWidget extends StatelessWidget {
+  final List<Butty> butties;
+  ButtyListByUserWidget(this.butties);
+
   @override
   Widget build(BuildContext context) {
-    return new Expanded(
-        child: new FutureBuilder(
-            future: db.geButtyList(),
-            builder:
-                (BuildContext context, AsyncSnapshot<List<Butty>> snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                  return Text('');
-                case ConnectionState.active:
-                  return Text('');
-                case ConnectionState.waiting:
-                  return Text('');
-                case ConnectionState.done:
-                  if (snapshot.hasError) return Text('');
-                  return new ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (BuildContext ctxt, int index) {
-                        return new ButtyWidget(
-                          butty: snapshot.data[index],
+    return Column(
+      children: <Widget>[
+        new ListView.builder(
+            shrinkWrap: true,
+            itemCount: butties.length,
+            itemBuilder: (BuildContext ctxt, int index) {
+              return new InkWell(
+                  child: new ButtyWidget(
+                    butties[index],
+                  ),
+                  onTap: () {
+                    getThisUser().then((String user) {
+                      if (user == butties[index].user) {
+                        Navigator.push(
+                          ctxt,
+                          new MaterialPageRoute(
+                            builder: (ctxt) {
+                              return CreateButtyWidget(butties[index]);
+                            },
+                          ),
                         );
-                      });
-              }
-            }));
+                      }
+                    });
+                  });
+            })
+      ],
+    );
+  }
+
+  Future<String> getThisUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String user = prefs.get("user");
+    return user;
   }
 }
 
-class ButtyWidget extends StatefulWidget {
+class ButtyWidget extends StatelessWidget {
   final Butty butty;
-  ButtyWidget({Butty butty}) : this.butty = butty;
-
-  ButtyWidgetState createState() => new ButtyWidgetState(butty);
-}
-
-class ButtyWidgetState extends State<ButtyWidget> {
-  ButtyWidgetState(this.butty);
-
-  final Butty butty;
+  ButtyWidget(this.butty);
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +90,8 @@ class ButtyWidgetState extends State<ButtyWidget> {
       icons.add(
           Image.asset('assets/brown_sauce.png', width: 50.0, height: 50.0));
     }
+
+    print("user ${butty.user} ${butty.number}");
 
     if (butty.number > 1) {
       icons.add(new Container(
