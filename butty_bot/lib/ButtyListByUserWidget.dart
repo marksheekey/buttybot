@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Butty.dart';
 import 'CreateButtyWidget.dart';
+import 'NextButtyWidget.dart';
 
 class ButtyListByUserWidget extends StatelessWidget {
   final List<Butty> butties;
@@ -12,6 +13,7 @@ class ButtyListByUserWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
+        NextButtyWidget(),
         new ListView.builder(
             shrinkWrap: true,
             itemCount: butties.length,
