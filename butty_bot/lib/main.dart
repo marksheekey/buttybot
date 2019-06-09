@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'ButtyBot',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        backgroundColor: Colors.white,
       ),
       home: MyHomePage(title: 'ButtyBot'),
     );
@@ -71,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => CreateButtyWidget(new Butty())),
+              builder: (context) => CreateButtyWidget(new Butty(), user)),
         );
       } else {
         Navigator.push(
@@ -104,7 +105,6 @@ class _MyHomePageState extends State<MyHomePage> {
               if (snapshot.hasError) return Text('');
 
               final List<Butty> list = snapshot.data.butties;
-              print("tabby");
 
               return MaterialApp(
                 home: DefaultTabController(

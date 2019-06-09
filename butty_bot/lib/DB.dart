@@ -6,6 +6,7 @@ import 'Butty.dart';
 final butties = FirebaseDatabase.instance.reference().child('butties');
 final users = FirebaseDatabase.instance.reference().child('users');
 final next = FirebaseDatabase.instance.reference().child('next');
+final location = FirebaseDatabase.instance.reference().child('location');
 
 void addButty(Butty butty) {
   butties.child(butty.id).set({

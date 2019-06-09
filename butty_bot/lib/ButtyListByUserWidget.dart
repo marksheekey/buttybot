@@ -3,60 +3,63 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Butty.dart';
 import 'CreateButtyWidget.dart';
-import 'NextButtyWidget.dart';
 
 class ButtyListByUserWidget extends StatelessWidget {
   final List<Butty> butties;
+
   ButtyListByUserWidget(this.butties);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        NextButtyWidget(),
-        new ListView.builder(
-            shrinkWrap: true,
-            itemCount: butties.length,
-            itemBuilder: (BuildContext ctxt, int index) {
-              return new InkWell(
-                  child: new ButtyWidget(
-                    butties[index],
-                  ),
-                  onTap: () {
-                    getThisUser().then((String user) {
-                      if (user == butties[index].user) {
-                        Navigator.push(
-                          ctxt,
-                          new MaterialPageRoute(
-                            builder: (ctxt) {
-                              return CreateButtyWidget(butties[index]);
-                            },
-                          ),
-                        );
-                      }
-                    });
-                  });
-            })
-      ],
-    );
+    return new ListView.builder(
+        shrinkWrap: true,
+        itemCount: butties.length,
+        itemBuilder: (BuildContext ctxt, int index) {
+          return new InkWell(
+              child: new ButtyWidget(
+                butties[index],
+              ),
+              onTap: () {
+                getThisUser().then((String user) {
+                  if (user == butties[index].user || user == "mark") {
+                    Navigator.push(
+                      ctxt,
+                      new MaterialPageRoute(
+                        builder: (ctxt) {
+                          return CreateButtyWidget(
+                              butties[index], butties[index].user);
+                        },
+                      ),
+                    );
+                  }
+                });
+              });
+        });
   }
+}
 
-  Future<String> getThisUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String user = prefs.get("user");
-    return user;
-  }
+Future<String> getThisUser() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String user = prefs.get("user");
+  return user;
 }
 
 class ButtyWidget extends StatelessWidget {
   final Butty butty;
+
   ButtyWidget(this.butty);
 
   @override
   Widget build(BuildContext context) {
     List<Widget> icons = new List();
 
+    Color a = Colors.white;
+    if (butty.number == 0) {
+      a = Colors.black12;
+    }
+
     icons.add(new Container(
+        color: Colors.white,
         alignment: Alignment.centerLeft,
         width: 75,
         height: 50,
@@ -95,7 +98,7 @@ class ButtyWidget extends StatelessWidget {
 
     print("user ${butty.user} ${butty.number}");
 
-    if (butty.number > 1) {
+    if (butty.number != 1) {
       icons.add(new Container(
           width: 50,
           height: 50,
@@ -106,6 +109,7 @@ class ButtyWidget extends StatelessWidget {
 
     return new Row(children: <Widget>[
       Container(
+        color: a,
         height: 50,
         child: new ListView.builder(
             shrinkWrap: true,

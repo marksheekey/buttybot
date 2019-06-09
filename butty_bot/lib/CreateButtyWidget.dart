@@ -7,26 +7,26 @@ import 'DB.dart' as db;
 
 class CreateButtyWidget extends StatefulWidget {
   final Butty butty;
-  CreateButtyWidget(this.butty);
+  final String user;
+
+  CreateButtyWidget(this.butty, this.user);
 
   @override
-  _CreateButtyState createState() => _CreateButtyState(this.butty);
+  _CreateButtyState createState() => _CreateButtyState(this.butty, this.user);
 }
 
 @override
 class _CreateButtyState extends State<CreateButtyWidget> {
   Butty butty;
+  String user;
 
-  _CreateButtyState(this.butty);
+  _CreateButtyState(this.butty, this.user);
 
   void _addButty() {
-    getThisUser().then((String user) {
-      butty.user = user;
-      var uuid = new Uuid();
-      butty.id = uuid.v4();
-      db.addButty(butty);
-      Navigator.pop(context);
-    });
+    var uuid = new Uuid();
+    butty.id = uuid.v4();
+    db.addButty(butty);
+    Navigator.pop(context);
   }
 
   void _updateButty() {
@@ -219,7 +219,7 @@ class _CreateButtyState extends State<CreateButtyWidget> {
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    if (butty.number > 1) {
+                    if (butty.number >= 1) {
                       butty.number--;
                     }
                   });
