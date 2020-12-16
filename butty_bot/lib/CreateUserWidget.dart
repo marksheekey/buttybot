@@ -68,9 +68,9 @@ class _CreateUserState extends State<CreateUserWidget> {
       ),
       body: Column(
         children: <Widget>[
-          Text("First you need to add yourslef as a user"),
+          Text("First you need to add yourself as a user"),
           new TextField(
-            decoration: new InputDecoration(hintText: 'User name'),
+            decoration: new InputDecoration(hintText: 'User name - then hit + button'),
             autofocus: true,
             controller: nameController,
           )

@@ -63,7 +63,12 @@ class ButtyWidget extends StatelessWidget {
         alignment: Alignment.centerLeft,
         width: 75,
         height: 50,
-        child: Center(child: new Text(butty.user))));
+        child: Center(child: new Text(
+          butty.user,
+          textAlign: TextAlign.start,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        ))));
 
     if (butty.white_bread) {
       icons.add(
